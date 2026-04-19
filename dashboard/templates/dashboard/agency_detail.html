@@ -1,0 +1,84 @@
+{% extends "dashboard/base.html" %}
+{% block head_title %}{{ agency.name }} · Fleet Central{% endblock %}
+{% block page_title %}{{ agency.name }}{% endblock %}
+{% block content %}
+<div class="mb-6 grid gap-4 lg:grid-cols-3">
+  <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 lg:col-span-2">
+    <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">Agency profile</h2>
+    <dl class="divide-y divide-gray-200 dark:divide-gray-600">
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">Name</dt>
+        <dd class="text-gray-900 dark:text-white sm:col-span-2">{{ agency.name }}</dd>
+      </div>
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">Contact email</dt>
+        <dd class="text-gray-900 dark:text-white sm:col-span-2">{{ agency.contact_email }}</dd>
+      </div>
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">Subdomain</dt>
+        <dd class="text-gray-900 dark:text-white sm:col-span-2">{{ agency.subdomain }}</dd>
+      </div>
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">License key</dt>
+        <dd class="break-all font-mono text-sm text-gray-900 dark:text-white sm:col-span-2">{{ agency.license_key }}</dd>
+      </div>
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">Status</dt>
+        <dd class="sm:col-span-2">
+          {% if agency.is_active %}
+          <span class="rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">Active</span>
+          {% else %}
+          <span class="rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">Inactive</span>
+          {% endif %}
+        </dd>
+      </div>
+      <div class="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-gray-500 dark:text-gray-400">Created</dt>
+        <dd class="text-gray-900 dark:text-white sm:col-span-2">{{ agency.created_at|date:"M j, Y H:i" }}</dd>
+      </div>
+    </dl>
+  </div>
+  <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <h2 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">Current tier</h2>
+    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ agency.tier.name }}</p>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Max cars: {{ agency.tier.max_cars }} · ${{ agency.tier.price_per_month }}/mo</p>
+    <button data-modal-target="tier-modal" data-modal-toggle="tier-modal" type="button" class="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">Change tier</button>
+  </div>
+</div>
+<p class="mb-4"><a href="{% url 'dashboard:agency-list' %}" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">&larr; Back to agencies</a></p>
+
+<div id="tier-modal" tabindex="-1" aria-hidden="true" class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+  <div class="relative max-h-full w-full max-w-md">
+    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+      <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Assign tier</h3>
+        <button type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="tier-modal">
+          <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6 6M7 7l-6 6"/></svg>
+        </button>
+      </div>
+      <form method="post" class="p-4 md:p-5">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="id_tier" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Subscription tier</label>
+          {{ form.tier }}
+          {% if form.tier.errors %}<p class="mt-1 text-sm text-red-600">{{ form.tier.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700">Save tier</button>
+          <button type="button" data-modal-hide="tier-modal" class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  {% if form.errors %}
+  var m = document.getElementById('tier-modal');
+  if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+  {% endif %}
+});
+</script>
+{% endblock %}

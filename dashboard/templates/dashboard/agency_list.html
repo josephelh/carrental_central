@@ -1,0 +1,57 @@
+{% extends "dashboard/base.html" %}
+{% block head_title %}Agencies · Fleet Central{% endblock %}
+{% block page_title %}Agencies{% endblock %}
+{% block content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+  <p class="text-sm text-gray-500 dark:text-gray-400">Manage rental agencies and subscription tiers.</p>
+</div>
+<div class="relative overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
+  <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+      <tr>
+        <th class="px-6 py-3">Name</th>
+        <th class="px-6 py-3">Subdomain</th>
+        <th class="px-6 py-3">Tier</th>
+        <th class="px-6 py-3">Status</th>
+        <th class="px-6 py-3"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in agencies %}
+      <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+        <th scope="row" class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">{{ a.name }}</th>
+        <td class="px-6 py-4">{{ a.subdomain }}</td>
+        <td class="px-6 py-4">{{ a.tier.name }}</td>
+        <td class="px-6 py-4">
+          {% if a.is_active %}
+          <span class="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">Active</span>
+          {% else %}
+          <span class="me-2 rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">Inactive</span>
+          {% endif %}
+        </td>
+        <td class="px-6 py-4 text-right">
+          <a href="{% url 'dashboard:agency-detail' a.pk %}" class="font-medium text-blue-600 hover:underline dark:text-blue-400">Manage</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr class="bg-white dark:bg-gray-800">
+        <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No agencies yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if is_paginated %}
+<nav class="mt-4 flex items-center justify-between" aria-label="Pagination">
+  <span class="text-sm text-gray-700 dark:text-gray-400">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+  <div class="inline-flex -space-x-px text-sm">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="flex h-9 items-center justify-center rounded-l-lg border border-gray-300 bg-white px-3 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700">Previous</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="flex h-9 items-center justify-center rounded-r-lg border border-gray-300 bg-white px-3 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700">Next</a>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block head_title %}Fleet Central{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</head>
+<body class="h-full bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+  <div class="flex h-full">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-gray-200 bg-white transition-transform md:static md:translate-x-0 dark:border-gray-800 dark:bg-gray-900" aria-label="Sidebar">
+      <div class="flex h-16 items-center border-b border-gray-200 px-4 dark:border-gray-800">
+        <a href="{% url 'dashboard:index' %}" class="text-lg font-semibold tracking-tight text-blue-700 dark:text-blue-400">Fleet Central</a>
+        <button type="button" data-drawer-hide="sidebar" aria-controls="sidebar" class="ml-auto inline-flex items-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 md:hidden dark:hover:bg-gray-800" aria-label="Close menu">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav class="space-y-1 overflow-y-auto p-3 text-sm font-medium">
+        <a href="{% url 'dashboard:index' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'index' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+          <span>Dashboard</span>
+        </a>
+        <a href="{% url 'dashboard:agency-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'agency-list' or request.resolver_match.url_name == 'agency-detail' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+          <span>Agencies</span>
+        </a>
+        <a href="{% url 'dashboard:blacklist-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'blacklist-list' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+          <span>Blacklist</span>
+        </a>
+        <a href="/django-admin/" class="flex items-center rounded-lg px-3 py-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">Legacy admin</a>
+      </nav>
+    </aside>
+
+    <div class="flex min-w-0 flex-1 flex-col md:pl-0">
+      <header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur dark:border-gray-800 dark:bg-gray-900/90">
+        <button type="button" data-drawer-target="sidebar" data-drawer-toggle="sidebar" data-drawer-backdrop="true" aria-controls="sidebar" class="inline-flex rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden dark:text-gray-300 dark:hover:bg-gray-800">
+          <span class="sr-only">Open menu</span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1 class="min-w-0 flex-1 truncate text-lg font-semibold text-gray-900 dark:text-white">{% block page_title %}Overview{% endblock %}</h1>
+        <button id="theme-toggle" type="button" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800" aria-label="Toggle dark mode">
+          <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+          <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+        </button>
+        <span class="hidden text-sm text-gray-600 sm:inline dark:text-gray-400">{{ user.username }}</span>
+        <form method="post" action="{% url 'dashboard:logout' %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-blue-600 dark:hover:bg-blue-700">Sign out</button>
+        </form>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        {% if messages %}
+        <div class="mb-4 space-y-2">
+          {% for message in messages %}
+          <div class="flex items-center rounded-lg border p-4 text-sm {% if message.tags == 'success' %}border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200{% elif message.tags == 'error' %}border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/30 dark:text-red-200{% else %}border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-200{% endif %}" role="alert">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var darkIcon = document.getElementById('theme-toggle-dark-icon');
+      var lightIcon = document.getElementById('theme-toggle-light-icon');
+      function setIcons() {
+        if (root.classList.contains('dark')) {
+          darkIcon.classList.add('hidden');
+          lightIcon.classList.remove('hidden');
+        } else {
+          lightIcon.classList.add('hidden');
+          darkIcon.classList.remove('hidden');
+        }
+      }
+      if (localStorage.getItem('color-theme') === 'dark' || (!localStorage.getItem('color-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+      setIcons();
+      document.getElementById('theme-toggle').addEventListener('click', function () {
+        root.classList.toggle('dark');
+        localStorage.setItem('color-theme', root.classList.contains('dark') ? 'dark' : 'light');
+        setIcons();
+      });
+    })();
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

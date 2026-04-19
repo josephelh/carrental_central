@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Fleet Central</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+</head>
+<body class="flex min-h-full items-center justify-center bg-gray-100 px-4 py-12 dark:bg-gray-950">
+  <div class="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+    <div class="mb-8 text-center">
+      <p class="text-sm font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">Fleet Central</p>
+      <h1 class="mt-2 text-2xl font-bold text-gray-900 dark:text-white">Super-admin sign in</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Use your Django superuser account.</p>
+    </div>
+    {% if form.non_field_errors %}
+    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200" role="alert">
+      {% for err in form.non_field_errors %}<p>{{ err }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" action="" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label for="id_username" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Username</label>
+        <input type="text" name="username" id="id_username" required autofocus
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          value="{{ form.username.value|default_if_none:'' }}">
+        {% if form.username.errors %}<p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label for="id_password" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
+        <input type="password" name="password" id="id_password" required
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500">
+        {% if form.password.errors %}<p class="mt-1 text-sm text-red-600">{{ form.password.errors.0 }}</p>{% endif %}
+      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign in</button>
+    </form>
+    <p class="mt-6 text-center text-xs text-gray-500 dark:text-gray-500">Protected area. All access is logged.</p>
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      if (localStorage.getItem('color-theme') === 'dark' || (!localStorage.getItem('color-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        root.classList.add('dark');
+      }
+    })();
+  </script>
+</body>
+</html>
