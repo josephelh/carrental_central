@@ -12,10 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-
-import dj_database_url
+import os
 from dotenv import load_dotenv
-
+from urllib.parse import urlparse, parse_qsl
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,23 +81,19 @@ WSGI_APPLICATION = 'central_core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-_database_url = (os.environ.get('DATABASE_URL') or '').strip().strip("'\"")
-if _database_url:
-    DATABASES = {
-        'default': dj_database_url.parse(
-            _database_url,
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,
-        ),
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': tmpPostgres.path.replace('/', ''),
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
+        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        },
-    }
+}
 
 
 # Password validation
@@ -147,7 +142,7 @@ LOGIN_REDIRECT_URL = 'dashboard:index'
 LOGOUT_REDIRECT_URL = 'dashboard:login'  # used if LogoutView next_page not set
 
 # Agency bridge + blacklist hashing (set in environment / .env)
-INTERNAL_SYSTEM_TOKEN = os.environ.get('INTERNAL_SYSTEM_TOKEN', '')
+INTERNAL_SYSTEM_TOKEN = os.environ.get('INTERNAL_SYSTEM_TOKEN', '').strip().strip("'").strip('"')
 GLOBAL_SALT = os.environ.get('GLOBAL_SALT') or os.environ.get('GLOBAL_BLACKLIST_SALT', '')
 
 REST_FRAMEWORK = {

@@ -1,0 +1,29 @@
+{% extends "dashboard/base.html" %}
+{% block head_title %}{% if tier %}Edit Tier{% else %}New Tier{% endif %} · Fleet Central{% endblock %}
+{% block page_title %}{% if tier %}Edit Tier{% else %}New Tier{% endif %}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-2xl rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    <div>
+      <label for="id_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Name</label>
+      {{ form.name }}
+      {% if form.name.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="id_max_cars" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Max Cars</label>
+      {{ form.max_cars }}
+      {% if form.max_cars.errors %}<p class="mt-1 text-sm text-red-600">{{ form.max_cars.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="id_price_per_month" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Price Per Month</label>
+      {{ form.price_per_month }}
+      {% if form.price_per_month.errors %}<p class="mt-1 text-sm text-red-600">{{ form.price_per_month.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="flex gap-2">
+      <button type="submit" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700">Save Tier</button>
+      <a href="{% url 'dashboard:tier-list' %}" class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

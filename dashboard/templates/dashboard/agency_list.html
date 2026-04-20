@@ -4,6 +4,7 @@
 {% block content %}
 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
   <p class="text-sm text-gray-500 dark:text-gray-400">Manage rental agencies and subscription tiers.</p>
+  <a href="{% url 'dashboard:agency-create' %}" class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">New Agency</a>
 </div>
 <div class="relative overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
   <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -30,7 +31,7 @@
           {% endif %}
         </td>
         <td class="px-6 py-4 text-right">
-          <a href="{% url 'dashboard:agency-detail' a.pk %}" class="font-medium text-blue-600 hover:underline dark:text-blue-400">Manage</a>
+          <a href="{% url 'dashboard:agency-update' a.pk %}" class="font-medium text-blue-600 hover:underline dark:text-blue-400">Edit</a>
         </td>
       </tr>
       {% empty %}

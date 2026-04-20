@@ -1,19 +1,22 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Severity(models.TextChoices):
     LOW = 'low', 'Low'
     MEDIUM = 'medium', 'Medium'
     HIGH = 'high', 'High'
 
-
-class GlobalBlacklistEntry(models.Model):
-    identity_hash = models.CharField(max_length=64, unique=True, db_index=True)
+class GlobalReputationEntry(models.Model):
+    identity_hash = models.CharField(max_length=64, db_index=True)
     reason = models.TextField()
+    rating = models.PositiveSmallIntegerField(
+        default=3, 
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
     reported_by = models.ForeignKey(
         'management.Agency',
         on_delete=models.PROTECT,
-        related_name='blacklist_reports',
+        related_name='reputation_reports',
     )
     severity = models.CharField(
         max_length=16,
@@ -24,6 +27,7 @@ class GlobalBlacklistEntry(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        unique_together = ('identity_hash', 'reported_by')
 
     def __str__(self) -> str:
-        return f'{self.identity_hash[:12]}...'
+        return f'{self.identity_hash[:12]}... ({self.rating}/5)'

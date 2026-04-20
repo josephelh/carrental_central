@@ -1,0 +1,37 @@
+{% extends "dashboard/base.html" %}
+{% block head_title %}Tiers · Fleet Central{% endblock %}
+{% block page_title %}Tiers{% endblock %}
+{% block content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+  <p class="text-sm text-gray-500 dark:text-gray-400">Create and edit tier plans such as Bronze, Silver, and Gold.</p>
+  <a href="{% url 'dashboard:tier-create' %}" class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">New Tier</a>
+</div>
+<div class="relative overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
+  <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+      <tr>
+        <th class="px-6 py-3">Name</th>
+        <th class="px-6 py-3">Max Cars</th>
+        <th class="px-6 py-3">Price/Month</th>
+        <th class="px-6 py-3"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tier in tiers %}
+      <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ tier.name }}</td>
+        <td class="px-6 py-4">{{ tier.max_cars }}</td>
+        <td class="px-6 py-4">${{ tier.price_per_month }}</td>
+        <td class="px-6 py-4 text-right">
+          <a href="{% url 'dashboard:tier-update' tier.pk %}" class="font-medium text-blue-600 hover:underline dark:text-blue-400">Edit</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr class="bg-white dark:bg-gray-800">
+        <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No tiers yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

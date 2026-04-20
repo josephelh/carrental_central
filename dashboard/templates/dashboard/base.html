@@ -24,11 +24,14 @@
         <a href="{% url 'dashboard:index' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'index' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
           <span>Dashboard</span>
         </a>
-        <a href="{% url 'dashboard:agency-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'agency-list' or request.resolver_match.url_name == 'agency-detail' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+        <a href="{% url 'dashboard:agency-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'agency-list' or request.resolver_match.url_name == 'agency-update' or request.resolver_match.url_name == 'agency-create' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
           <span>Agencies</span>
         </a>
-        <a href="{% url 'dashboard:blacklist-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'blacklist-list' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
-          <span>Blacklist</span>
+        <a href="{% url 'dashboard:tier-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'tier-list' or request.resolver_match.url_name == 'tier-create' or request.resolver_match.url_name == 'tier-update' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+          <span>Tiers</span>
+        </a>
+        <a href="{% url 'dashboard:reputation-list' %}" class="flex items-center rounded-lg px-3 py-2 {% if request.resolver_match.url_name == 'reputation-list' or request.resolver_match.url_name == 'reputation-update' or request.resolver_match.url_name == 'reputation-delete' %}bg-blue-600 text-white dark:bg-blue-600{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800{% endif %}">
+          <span>Reputation</span>
         </a>
         <a href="/django-admin/" class="flex items-center rounded-lg px-3 py-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">Legacy admin</a>
       </nav>

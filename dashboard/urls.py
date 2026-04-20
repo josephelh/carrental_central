@@ -9,6 +9,20 @@ urlpatterns = [
     path('accounts/logout/', views.DashboardLogoutView.as_view(), name='logout'),
     path('', views.IndexView.as_view(), name='index'),
     path('agencies/', views.AgencyListView.as_view(), name='agency-list'),
-    path('agencies/<int:pk>/', views.AgencyDetailView.as_view(), name='agency-detail'),
-    path('blacklist/', views.BlacklistListView.as_view(), name='blacklist-list'),
+    path('agencies/new/', views.AgencyCreateView.as_view(), name='agency-create'),
+    path('agencies/<int:pk>/edit/', views.AgencyUpdateView.as_view(), name='agency-update'),
+    path('tiers/', views.TierListView.as_view(), name='tier-list'),
+    path('tiers/new/', views.TierCreateView.as_view(), name='tier-create'),
+    path('tiers/<int:pk>/edit/', views.TierUpdateView.as_view(), name='tier-update'),
+    path('reputation/', views.ReputationListView.as_view(), name='reputation-list'),
+    path(
+        'reputation/<int:pk>/edit/',
+        views.ReputationUpdateView.as_view(),
+        name='reputation-update',
+    ),
+    path(
+        'reputation/<int:pk>/delete/',
+        views.ReputationDeleteView.as_view(),
+        name='reputation-delete',
+    ),
 ]

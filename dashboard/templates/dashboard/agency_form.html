@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+{% block head_title %}{% if agency %}Edit Agency{% else %}New Agency{% endif %} · Fleet Central{% endblock %}
+{% block page_title %}{% if agency %}Edit Agency{% else %}New Agency{% endif %}{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-3xl rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    <div>
+      <label for="id_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Name</label>
+      {{ form.name }}
+      {% if form.name.errors %}<p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="id_contact_email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Contact Email</label>
+      {{ form.contact_email }}
+      {% if form.contact_email.errors %}<p class="mt-1 text-sm text-red-600">{{ form.contact_email.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="id_subdomain" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Subdomain</label>
+      {{ form.subdomain }}
+      {% if form.subdomain.errors %}<p class="mt-1 text-sm text-red-600">{{ form.subdomain.errors.0 }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="id_tier" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tier</label>
+      {{ form.tier }}
+      {% if form.tier.errors %}<p class="mt-1 text-sm text-red-600">{{ form.tier.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="flex items-center gap-2">
+      {{ form.is_active }}
+      <label for="id_is_active" class="text-sm font-medium text-gray-900 dark:text-white">Is Active</label>
+      {% if form.is_active.errors %}<p class="text-sm text-red-600">{{ form.is_active.errors.0 }}</p>{% endif %}
+    </div>
+    <div class="flex gap-2">
+      <button type="submit" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700">Save Agency</button>
+      <a href="{% url 'dashboard:agency-list' %}" class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
