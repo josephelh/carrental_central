@@ -1,6 +1,7 @@
+from blacklist.models import GlobalReputationEntry
 from rest_framework import serializers
 from management.models import Agency
-from core_shared.hashing import normalize_identity
+from core_shared.hashing import hash_identity, normalize_identity
 
 
 def _clean_identity(value: str) -> str:
@@ -20,7 +21,8 @@ class BlacklistCheckSerializer(serializers.Serializer):
 
 
 class BlacklistReportSerializer(serializers.Serializer):
-    identity = serializers.CharField()
+    cin = serializers.CharField(required=False, allow_blank=True)
+    license_number = serializers.CharField(required=False, allow_blank=True)
     reason = serializers.CharField()
     rating = serializers.IntegerField(min_value=1, max_value=5)
     license_key = serializers.UUIDField()
@@ -39,6 +41,20 @@ class BlacklistReportSerializer(serializers.Serializer):
         if not agency.is_active:
             raise serializers.ValidationError({"license_key": "This agency is currently inactive."})
             
-        # Add the actual agency object to the validated data for the view to use
-        attrs['agency'] = agency
+        if not attrs.get('cin') and not attrs.get('license_number'):
+            raise serializers.ValidationError("Il faut au moins un CIN ou un permis.")
+        
         return attrs
+
+    def create(self, validated_data):
+        # We hash them here using the Global Salt before saving
+        cin_raw = validated_data.get('cin')
+        lic_raw = validated_data.get('license_number')
+        
+        return GlobalReputationEntry.objects.create(
+            cin_hash=hash_identity(normalize_identity(cin_raw)) if cin_raw else None,
+            license_hash=hash_identity(normalize_identity(lic_raw)) if lic_raw else None,
+            reason=validated_data['reason'],
+            rating=validated_data['rating'],
+            reported_by=validated_data['agency']
+        )

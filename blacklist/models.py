@@ -7,7 +7,8 @@ class Severity(models.TextChoices):
     HIGH = 'high', 'High'
 
 class GlobalReputationEntry(models.Model):
-    identity_hash = models.CharField(max_length=64, db_index=True)
+    cin_hash = models.CharField(max_length=64, db_index=True, null=True, blank=True)
+    license_hash = models.CharField(max_length=64, db_index=True, null=True, blank=True)
     reason = models.TextField()
     rating = models.PositiveSmallIntegerField(
         default=3, 
@@ -27,7 +28,7 @@ class GlobalReputationEntry(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = ('identity_hash', 'reported_by')
+        unique_together = ('cin_hash', 'reported_by')
 
     def __str__(self) -> str:
-        return f'{self.identity_hash[:12]}... ({self.rating}/5)'
+        return f'{self.cin_hash[:12]}... ({self.rating}/5)'
