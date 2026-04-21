@@ -31,19 +31,22 @@ class BlacklistReportSerializer(serializers.Serializer):
         return _clean_identity(value)
 
     def validate(self, attrs):
-        # This method is CRITICAL. It checks if the agency exists and is active.
-        license_key = attrs.get('license_key')
-        try:
-            agency = Agency.objects.get(license_key=license_key)
-        except Agency.DoesNotExist:
-            raise serializers.ValidationError({"license_key": "Invalid agency license key."})
-        
-        if not agency.is_active:
-            raise serializers.ValidationError({"license_key": "This agency is currently inactive."})
-            
+        # 1. Ensure at least one ID is provided
         if not attrs.get('cin') and not attrs.get('license_number'):
-            raise serializers.ValidationError("Il faut au moins un CIN ou un permis.")
-        
+            raise serializers.ValidationError("Fournir au moins un CIN ou un numéro de permis.")
+
+        # 2. Lookup the Agency by License Key
+        lk = attrs.get('license_key')
+        try:
+            agency = Agency.objects.get(license_key=lk)
+            if not agency.is_active:
+                raise serializers.ValidationError("Cette agence est inactive sur le serveur central.")
+            
+            # SUCCESS: Inject the actual Agency object into validated_data
+            attrs['agency'] = agency 
+        except Agency.DoesNotExist:
+            raise serializers.ValidationError("Clé de licence invalide.")
+
         return attrs
 
     def create(self, validated_data):
