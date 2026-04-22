@@ -1,9 +1,10 @@
 from django.urls import path
-from blacklist.views import ReputationCheckView, ReputationReportView
-from management.views import VerifyLicenseView
+
+from blacklist.views import reputation_check, reputation_report
+from management.views import verify_license
 
 urlpatterns = [
-    path('verify/', VerifyLicenseView.as_view(), name='agency-verify-license'),
-    path('reputation/check/', ReputationCheckView.as_view(), name='agency-reputation-check'),
-    path('reputation/report/', ReputationReportView.as_view(), name='agency-reputation-report'),
+    path('verify/', verify_license, name='agency-verify-license'),
+    path('reputation/check/', reputation_check, name='agency-reputation-check'),
+    path('reputation/report/', reputation_report, name='agency-reputation-report'),
 ]
